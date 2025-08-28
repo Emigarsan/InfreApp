@@ -123,10 +123,6 @@ export default function Questionnaire() {
       >
         Continuar
       </button>
-
-      <div style={{ fontSize: 12, opacity: .8 }}>
-        Un admin puede iniciar/ajustar la sesión desde la pestaña Admin.
-      </div>
     </div>
   )
 }

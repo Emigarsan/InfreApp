@@ -76,7 +76,7 @@ export default function Autocomplete({
                 ref={inputRef}
                 value={query}
                 placeholder={placeholder}
-                onFocus={() => setOpen(true)}
+                onFocus={() => setOpen(false)}
                 onChange={e => { setQuery(e.target.value); setOpen(true); setActiveIdx(0) }}
                 onKeyDown={onKeyDown}
                 style={{

@@ -62,8 +62,9 @@ export const HEROES = [
 ]
 
 export const ASPECTS = [
-    'Aggression',
-    'Justice',
-    'Protection',
-    'Leadership'
+    'Agresividad',
+    'Justicia',
+    'Liderazgo',
+    'Masacrismo',
+    'Protección',
 ]
