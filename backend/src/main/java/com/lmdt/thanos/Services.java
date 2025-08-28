@@ -90,22 +90,25 @@ class SessionService {
       next = 0;
     s.setHpCurrent(next);
 
-    if (next == 0) {
-      if (s.getPhase() == Phase.PHASE1) {
-        // 🔥 Transición inmediata a Fase 2 dentro de la misma transacción
-        return advanceToPhase2Internal(s);
-      }
-      if (s.getPhase() == Phase.PHASE2) {
-        s.setLocked(true);
-        s.setPhase(Phase.FINISHED);
-        sessionRepo.saveAndFlush(s);
-        publish(s);
-        return s;
-      }
+    // 🔒 Si llega a 0 en Fase 1, solo bloquea (NO avanzar aquí)
+    if (s.getPhase() == Phase.PHASE1 && next == 0) {
+      s.setLocked(true);
+    }
+
+    // Si es Fase 2 y llega a 0, FINISHED (si así lo quieres)
+    if (s.getPhase() == Phase.PHASE2 && next == 0) {
+      s.setLocked(true);
+      s.setPhase(Phase.FINISHED);
     }
 
     sessionRepo.saveAndFlush(s);
     publish(s);
+    return s;
+  }
+
+  sessionRepo.saveAndFlush(s);
+
+  publish(s);
     return s;
   }
 
