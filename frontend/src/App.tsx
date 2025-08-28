@@ -10,7 +10,6 @@ export default function App() {
           <Link to="/phase1">Fase 1</Link>
           <Link to="/phase2">Fase 2</Link>
           <Link to="/admin">Admin</Link>
-
         </nav>
       </header>
       <Outlet />
