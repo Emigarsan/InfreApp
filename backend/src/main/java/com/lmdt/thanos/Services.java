@@ -152,7 +152,9 @@ class SessionService {
     s.setTotalPlayers(totalPlayers);
 
     // 🔥 Segundo contador: por ejemplo totalPlayers * indicatorK
-    int auxMax = totalPlayers * Math.max(1, indicatorK);
+    // int auxMax = 2 + (totalPlayers * Math.max(1, indicatorK));
+    int auxMax = tables.stream()
+        .mapToInt(t -> 2 + (t.getPlayerCount() * indicatorK)).sum();
     s.setAuxMax(auxMax);
     s.setAuxCurrent(auxMax);
 

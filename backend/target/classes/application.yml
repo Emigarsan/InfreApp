@@ -19,4 +19,4 @@ app:
     normal: 23
     expert: 26
   indicator:
-    k: 5  # multiplicador simple para la barra de fase 2
+    k: 1  # multiplicador simple para la barra de fase 2
