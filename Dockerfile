@@ -12,8 +12,8 @@ COPY backend/ ./
 # Copiamos el frontend build a los estáticos del backend
 RUN mkdir -p src/main/resources/static
 COPY --from=fe /app/frontend/dist/ src/main/resources/static/
-# Compilar backend
-RUN mvn -B -DskipTests package
+# 👇 IMPORTANTE: incluir spring-boot:repackage
+RUN mvn -B -DskipTests clean package spring-boot:repackage
 
 # ---- RUNTIME ----
 FROM eclipse-temurin:17-jre
