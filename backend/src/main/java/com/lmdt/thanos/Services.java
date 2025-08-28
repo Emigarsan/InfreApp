@@ -106,12 +106,6 @@ class SessionService {
     return s;
   }
 
-  sessionRepo.saveAndFlush(s);
-
-  publish(s);
-    return s;
-  }
-
   // 🔽 Ajuste del segundo contador en Fase 2
   @Transactional
   public SessionEntity adjustAux(int delta) {
