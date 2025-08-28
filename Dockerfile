@@ -5,16 +5,15 @@ COPY frontend/ ./
 RUN npm ci || npm install
 RUN npm run build
 
-# ---- BE BUILD ----
-FROM eclipse-temurin:17-jdk AS be-build
-WORKDIR /app
-COPY backend/ ./backend/
-# Mete el build del frontend dentro de los estáticos del backend
-RUN mkdir -p ./backend/src/main/resources/static
-COPY --from=fe /app/frontend/dist/ ./backend/src/main/resources/static/
+# ---- BE BUILD (usa Maven oficial, NO wrapper) ----
+FROM maven:3.9-eclipse-temurin-17 AS be-build
 WORKDIR /app/backend
-RUN chmod +x mvnw || true
-RUN ./mvnw -DskipTests package
+COPY backend/ ./
+# Copiamos el frontend build a los estáticos del backend
+RUN mkdir -p src/main/resources/static
+COPY --from=fe /app/frontend/dist/ src/main/resources/static/
+# Compilar backend
+RUN mvn -B -DskipTests package
 
 # ---- RUNTIME ----
 FROM eclipse-temurin:17-jre
