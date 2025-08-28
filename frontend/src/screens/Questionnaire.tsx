@@ -77,6 +77,7 @@ export default function Questionnaire() {
                   <option value="Justice">Justicia</option>
                   <option value="Leadership">Liderazgo</option>
                   <option value="Protection">Protección</option>
+                  <option value="Pool">Masacrismo</option>
                 </select>
               </div>
             ))}
