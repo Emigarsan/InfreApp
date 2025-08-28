@@ -47,9 +47,12 @@ export default function PhaseTwo() {
         <div style={{ fontSize: 28 }}>{session.hp_current} / {session.hp_max}</div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {[-10, -5, -1, +1, +5, +10].map(d =>
-            <button key={'m' + d} disabled={disabled}
+            <button
+              key={'m' + d}
+              disabled={disabled}
               onClick={() => adjustMain(d)}
-              style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}>
+              style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}
+            >
               {d > 0 ? `+${d}` : d}
             </button>
           )}
@@ -62,9 +65,12 @@ export default function PhaseTwo() {
         <div style={{ fontSize: 22 }}>{session.aux_current} / {session.aux_max}</div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {[-10, -5, -1, +1, +5, +10].map(d =>
-            <button key={'a' + d} disabled={disabled}
+            <button
+              key={'a' + d}
+              disabled={disabled}
               onClick={() => adjustAux(d)}
-              style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}>
+              style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}
+            >
               {d > 0 ? `+${d}` : d}
             </button>
           )}
@@ -74,4 +80,9 @@ export default function PhaseTwo() {
         </div>
       </div>
 
-      {session.phase === 'FINISHED' && <div style={{ fontSize: 22 }}>¡Evento completado!</div>}
+      {session.phase === 'FINISHED' && (
+        <div style={{ fontSize: 22 }}>¡Evento completado!</div>
+      )}
+    </div>
+  )
+}
