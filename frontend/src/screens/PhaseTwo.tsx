@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { connect, disconnect } from '../ws'
-import { post } from '../api'
+import { get, post } from '../api'
 
 type Session = {
   phase: 'PHASE1' | 'PHASE2' | 'FINISHED',
@@ -10,14 +10,29 @@ type Session = {
   total_players: number,
   aux_current: number,
   aux_max: number
-}
+} | null
 
 export default function PhaseTwo() {
-  const [session, setSession] = useState<Session | null>(null)
-  useEffect(() => { connect(setSession); return () => disconnect(); }, [])
+  const [session, setSession] = useState<Session>(null)
+
+  // 1) Semilla inicial con REST
+  useEffect(() => {
+    get<Session>('/api/session')
+      .then(s => setSession(s))
+      .catch(err => {
+        console.error('GET /api/session falló', err)
+        setSession(null)
+      })
+  }, [])
+
+  // 2) Suscripción WS
+  useEffect(() => {
+    connect((msg: any) => setSession(msg))
+    return () => disconnect()
+  }, [])
 
   if (!session) return <div>Cargando…</div>
-  if (session.phase !== 'PHASE2' && session.phase !== 'FINISHED') return <div>Esperando…</div>
+  if (session.phase !== 'PHASE2' && session.phase !== 'FINISHED') return <div>Esperando Fase 2…</div>
 
   const disabled = session.locked || session.phase === 'FINISHED'
 
@@ -26,7 +41,7 @@ export default function PhaseTwo() {
 
   return (
     <div style={{ display: 'grid', gap: 24, placeItems: 'center' }}>
-      {/* Contador 1: Thanos Fase 2 */}
+      {/* Contador principal: Thanos F2 */}
       <div style={{ display: 'grid', gap: 12, placeItems: 'center' }}>
         <img src="/thanos_phase2.png" alt="Thanos Fase 2" style={{ maxWidth: 320 }} />
         <div style={{ fontSize: 28 }}>{session.hp_current} / {session.hp_max}</div>
@@ -41,7 +56,7 @@ export default function PhaseTwo() {
         </div>
       </div>
 
-      {/* Contador 2: Imagen horizontal + contador basado en participantes */}
+      {/* Contador auxiliar: indicador horizontal */}
       <div style={{ display: 'grid', gap: 12, placeItems: 'center', width: '100%' }}>
         <img src="/indicator_phase2.png" alt="Indicador Fase 2" style={{ maxWidth: 640, width: '100%' }} />
         <div style={{ fontSize: 22 }}>{session.aux_current} / {session.aux_max}</div>
@@ -60,6 +75,3 @@ export default function PhaseTwo() {
       </div>
 
       {session.phase === 'FINISHED' && <div style={{ fontSize: 22 }}>¡Evento completado!</div>}
-    </div>
-  )
-}

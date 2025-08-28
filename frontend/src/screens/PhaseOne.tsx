@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { connect, disconnect } from '../ws'
-import { post } from '../api'
+import { get, post } from '../api'
 
 type Session = {
   phase: 'PHASE1' | 'PHASE2' | 'FINISHED',
@@ -9,15 +9,29 @@ type Session = {
   hp_max: number,
   locked: boolean,
   total_players: number
-}
+} | null
 
 export default function PhaseOne() {
-  const [session, setSession] = useState<Session | null>(null)
+  const [session, setSession] = useState<Session>(null)
   const navigate = useNavigate()
 
-  useEffect(() => { connect(setSession); return () => disconnect(); }, [])
+  // 1) Cargar snapshot inicial por REST
+  useEffect(() => {
+    get<Session>('/api/session')
+      .then(s => setSession(s))
+      .catch(err => {
+        console.error('GET /api/session falló', err)
+        setSession(null) // deja “Cargando…” si no hay sesión aún
+      })
+  }, [])
 
-  // 🔽 si el backend ya cambió a PHASE2, redirige
+  // 2) Suscribir a tiempo real
+  useEffect(() => {
+    connect((msg: any) => setSession(msg))
+    return () => disconnect()
+  }, [])
+
+  // 3) Si ya estamos en PHASE2/FINISHED, navegar
   useEffect(() => {
     if (!session) return
     if (session.phase === 'PHASE2' || session.phase === 'FINISHED') {
@@ -27,6 +41,7 @@ export default function PhaseOne() {
 
   const adjust = (delta: number) => post<Session>('/api/session/adjust', { delta }).then(setSession)
 
+  // Render
   if (!session) return <div>Cargando…</div>
   if (session.phase !== 'PHASE1') return <div>Transicionando…</div>
 
@@ -35,6 +50,7 @@ export default function PhaseOne() {
     <div style={{ display: 'grid', placeItems: 'center', gap: 16 }}>
       <img src="/thanos_phase1.png" alt="Thanos Fase 1" style={{ maxWidth: 320 }} />
       <div style={{ fontSize: 28 }}>{session.hp_current} / {session.hp_max}</div>
+
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {[-10, -5, -1, +1, +5, +10].map(d =>
           <button key={d} disabled={disabled}
@@ -44,7 +60,10 @@ export default function PhaseOne() {
           </button>
         )}
       </div>
-      {disabled && <div style={{ fontSize: 18 }}>¡Fase completada, preparando la siguiente…!</div>}
+
+      {disabled && <div style={{ fontSize: 14, opacity: .7 }}>
+        Esperando a que el admin pulse <b>Start/Recalc</b>…
+      </div>}
     </div>
   )
 }
