@@ -5,10 +5,11 @@ COPY frontend/ ./
 RUN npm ci || npm install
 RUN npm run build
 
-# ---- BE BUILD ----
+# ---- BE BUILD (usa Maven oficial, NO wrapper) ----
 FROM maven:3.9-eclipse-temurin-17 AS be-build
 WORKDIR /app/backend
 COPY backend/ ./
+# Copiamos el frontend build a los estáticos del backend
 RUN mkdir -p src/main/resources/static
 COPY --from=fe /app/frontend/dist/ src/main/resources/static/
 # 👇 IMPORTANTE: incluir spring-boot:repackage
