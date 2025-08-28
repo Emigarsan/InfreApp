@@ -1,0 +1,120 @@
+{
+    "info": {
+        "name": "Thanos Backend",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get Session",
+            "request": {
+                "method": "GET",
+                "url": "{{base}}/api/session"
+            }
+        },
+        {
+            "name": "Start Session",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"p1Normal\": 12,\n  \"p1Expert\": 18,\n  \"p2Normal\": 14,\n  \"p2Expert\": 22\n}"
+                },
+                "url": "{{base}}/api/session/start"
+            }
+        },
+        {
+            "name": "Create Table NORMAL",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"name\": \"Mesa Normal\",\n  \"mode\": \"NORMAL\",\n  \"players\": [\n    { \"hero\": \"Capitana Marvel\", \"aspect\": \"Aggression\" },\n    { \"hero\": \"Hulk\", \"aspect\": \"Protection\" }\n  ]\n}"
+                },
+                "url": "{{base}}/api/tables"
+            }
+        },
+        {
+            "name": "Create Table EXPERT",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"name\": \"Mesa Experta\",\n  \"mode\": \"EXPERT\",\n  \"players\": [\n    { \"hero\": \"Spider-Man\", \"aspect\": \"Justice\" },\n    { \"hero\": \"Ant-Man\", \"aspect\": \"Leadership\" },\n    { \"hero\": \"Black Widow\", \"aspect\": \"Protection\" }\n  ]\n}"
+                },
+                "url": "{{base}}/api/tables"
+            }
+        },
+        {
+            "name": "Adjust +5",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{ \"delta\": 5 }"
+                },
+                "url": "{{base}}/api/session/adjust"
+            }
+        },
+        {
+            "name": "Adjust -10",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{ \"delta\": -10 }"
+                },
+                "url": "{{base}}/api/session/adjust"
+            }
+        },
+        {
+            "name": "Advance Phase",
+            "request": {
+                "method": "POST",
+                "url": "{{base}}/api/session/advance"
+            }
+        },
+        {
+            "name": "List Tables",
+            "request": {
+                "method": "GET",
+                "url": "{{base}}/api/tables"
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base",
+            "value": "http://localhost:8080"
+        }
+    ]
+}

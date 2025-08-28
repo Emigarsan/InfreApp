@@ -1,0 +1,32 @@
+#!/bin/sh
+# Apache Maven Wrapper startup script (Unix)
+# Downloads maven-wrapper.jar if necessary and runs Maven via the wrapper.
+# Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.
+# See the NOTICE file distributed with this work for additional information.
+
+WRAPPER_JAR=".mvn/wrapper/maven-wrapper.jar"
+PROPS=".mvn/wrapper/maven-wrapper.properties"
+
+# Resolve base dir
+BASEDIR=$(cd "$(dirname "$0")"; pwd -P)
+
+# If wrapper jar doesn't exist, download it from wrapperUrl in properties
+if [ ! -f "$BASEDIR/$WRAPPER_JAR" ]; then
+  if [ -f "$BASEDIR/$PROPS" ]; then
+    WRAPPER_URL=$(grep -E "^wrapperUrl=" "$BASEDIR/$PROPS" | cut -d'=' -f2-)
+    echo "Downloading Maven Wrapper from: $WRAPPER_URL"
+    mkdir -p "$BASEDIR/.mvn/wrapper"
+    if command -v curl >/dev/null 2>&1; then
+      curl -fsSL -o "$BASEDIR/$WRAPPER_JAR" "$WRAPPER_URL"
+    elif command -v wget >/dev/null 2>&1; then
+      wget -O "$BASEDIR/$WRAPPER_JAR" "$WRAPPER_URL"
+    else
+      echo "Error: Please install curl or wget to download the Maven Wrapper." >&2
+      exit 1
+    fi
+  fi
+fi
+
+JAVA_EXE="java"
+# Execute Maven Wrapper
+exec "$JAVA_EXE" -cp "$BASEDIR/$WRAPPER_JAR" org.apache.maven.wrapper.MavenWrapperMain "$@"
