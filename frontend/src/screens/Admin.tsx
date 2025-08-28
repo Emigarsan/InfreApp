@@ -14,14 +14,23 @@ type Session = {
 
 export default function Admin() {
     const [session, setSession] = useState<Session>(null)
+    const [loading, setLoading] = useState(true)
     const [manualHp, setManualHp] = useState<string>('')
 
+    // Cargar snapshot inicial
     useEffect(() => {
         get<Session>('/api/session')
-            .then(setSession)
-            .catch(() => setSession(null))
+            .then(s => {
+                setSession(s)
+                setLoading(false)
+            })
+            .catch(e => {
+                console.error('Error al cargar /api/session', e)
+                setLoading(false)
+            })
     }, [])
 
+    // Suscripción WS
     useEffect(() => {
         connect((msg: any) => setSession(msg))
         return () => disconnect()
@@ -35,7 +44,6 @@ export default function Admin() {
         if (!manualHp) return
         const value = parseInt(manualHp, 10)
         if (isNaN(value)) return
-        // Nuevo endpoint para fijar HP
         const updated = await post<Session>('/api/session/setHp', { value })
         setSession(updated)
         setManualHp('')
@@ -45,7 +53,18 @@ export default function Admin() {
         <div style={{ display: 'grid', gap: 16, maxWidth: 600 }}>
             <h2>Panel de administración</h2>
 
-            {!session && <div>Cargando estado…</div>}
+            {loading && <div>Cargando estado…</div>}
+
+            {!loading && !session && (
+                <div>
+                    No hay ninguna sesión activa todavía.
+                    <br />
+                    Pulsa <b>Start</b> para iniciar una.
+                    <div style={{ marginTop: 12 }}>
+                        <button onClick={start}>Start</button>
+                    </div>
+                </div>
+            )}
 
             {session && (
                 <>
