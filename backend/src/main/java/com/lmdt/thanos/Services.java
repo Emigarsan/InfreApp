@@ -128,6 +128,16 @@ class SessionService {
   }
 
   @Transactional
+  public SessionEntity setHp(int value) {
+    SessionEntity latest = getOrCreate();
+    SessionEntity s = sessionRepo.lockById(latest.getId()).orElse(latest);
+    s.setHpCurrent(Math.max(0, Math.min(value, s.getHpMax())));
+    sessionRepo.saveAndFlush(s);
+    publish(s);
+    return s;
+  }
+
+  @Transactional
   public SessionEntity advanceToPhase2() {
     SessionEntity s = getOrCreate();
     s = sessionRepo.lockById(s.getId()).orElse(s);

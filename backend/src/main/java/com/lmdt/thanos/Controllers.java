@@ -77,6 +77,12 @@ class SessionController {
     return SessionDto.from(sessionService.adjustAux(r.delta));
   }
 
+  @PostMapping("/setHp")
+  public SessionDto setHp(@RequestBody Map<String, Integer> body) {
+    int value = body.getOrDefault("value", 0);
+    return SessionDto.from(sessionService.setHp(value));
+  }
+
   @Data
   static class StartReq {
     public Integer p1Normal, p1Expert, p2Normal, p2Expert;

@@ -1,60 +1,80 @@
 import { useEffect, useState } from 'react'
 import { get, post } from '../api'
+import { connect, disconnect } from '../ws'
 
 type Session = {
     phase: 'PHASE1' | 'PHASE2' | 'FINISHED',
     hp_current: number,
     hp_max: number,
     locked: boolean,
-    total_players: number
+    total_players: number,
+    aux_current?: number,
+    aux_max?: number
 } | null
 
 export default function Admin() {
     const [session, setSession] = useState<Session>(null)
-    const [p1Normal, setP1Normal] = useState(16)
-    const [p1Expert, setP1Expert] = useState(23)
-    const [p2Normal, setP2Normal] = useState(23)
-    const [p2Expert, setP2Expert] = useState(26)
+    const [manualHp, setManualHp] = useState<string>('')
 
-    useEffect(() => { get<Session>('/api/session').then(setSession).catch(() => setSession(null)) }, [])
+    useEffect(() => {
+        get<Session>('/api/session')
+            .then(setSession)
+            .catch(() => setSession(null))
+    }, [])
 
-    const start = async () => {
-        const s = await post<Session>('/api/session/start', { p1Normal, p1Expert, p2Normal, p2Expert })
-        setSession(s)
+    useEffect(() => {
+        connect((msg: any) => setSession(msg))
+        return () => disconnect()
+    }, [])
+
+    const start = () => post<Session>('/api/session/start', {}).then(setSession)
+    const advance = () => post<Session>('/api/session/advance', {}).then(setSession)
+    const recalc = () => post<Session>('/api/session/recalc', {}).then(setSession)
+
+    const applyManualHp = async () => {
+        if (!manualHp) return
+        const value = parseInt(manualHp, 10)
+        if (isNaN(value)) return
+        // Nuevo endpoint para fijar HP
+        const updated = await post<Session>('/api/session/setHp', { value })
+        setSession(updated)
+        setManualHp('')
     }
-    const advance = async () => {
-        const s = await post<Session>('/api/session/advance', {})
-        setSession(s)
-    }
-    const reset = async () => {
-        const s = await post<Session>('/api/session/reset', {}) // 🔽 necesitas endpoint (abajo)
-        setSession(s)
-    }
-
-    const plusMain = (d: number) => post<Session>('/api/session/adjust', { delta: d }).then(setSession)
-    const plusAux = (d: number) => post<Session>('/api/session/adjustAux', { delta: d }).then(setSession)
-
 
     return (
-        <div style={{ display: 'grid', gap: 12 }}>
-            <h2>Admin</h2>
+        <div style={{ display: 'grid', gap: 16, maxWidth: 600 }}>
+            <h2>Panel de administración</h2>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, maxWidth: 600 }}>
-                <label>F1 Normal <input type="number" value={p1Normal} onChange={e => setP1Normal(+e.target.value || 0)} /></label>
-                <label>F1 Experto <input type="number" value={p1Expert} onChange={e => setP1Expert(+e.target.value || 0)} /></label>
-                <label>F2 Normal <input type="number" value={p2Normal} onChange={e => setP2Normal(+e.target.value || 0)} /></label>
-                <label>F2 Experto <input type="number" value={p2Expert} onChange={e => setP2Expert(+e.target.value || 0)} /></label>
-            </div>
+            {!session && <div>Cargando estado…</div>}
 
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <button onClick={start} style={{ padding: '8px 12px' }}>Start / Recalc</button>
-                <button onClick={advance} style={{ padding: '8px 12px' }}>Advance → Fase 2</button>
-                <button onClick={reset} style={{ padding: '8px 12px' }}>Reset</button>
-            </div>
+            {session && (
+                <>
+                    <div>Fase actual: {session.phase}</div>
+                    <div>HP: {session.hp_current} / {session.hp_max}</div>
+                    <div>Jugadores totales: {session.total_players}</div>
 
-            <pre style={{ background: '#111', color: '#0f0', padding: 12, borderRadius: 8, overflow: 'auto' }}>
-                {JSON.stringify(session, null, 2)}
-            </pre>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        <button onClick={start}>Start</button>
+                        <button onClick={advance}>Avanzar fase</button>
+                        <button onClick={recalc}>Recalcular</button>
+                    </div>
+
+                    <div style={{ marginTop: 20 }}>
+                        <label>
+                            Valor de vida manual:
+                            <input
+                                type="number"
+                                value={manualHp}
+                                onChange={e => setManualHp(e.target.value)}
+                                style={{ marginLeft: 8 }}
+                            />
+                        </label>
+                        <button onClick={applyManualHp} style={{ marginLeft: 8 }}>
+                            Aplicar
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     )
 }
