@@ -3,7 +3,7 @@ package com.lmdt.thanos;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,6 +75,12 @@ class SessionController {
   @PostMapping("/adjustAux")
   public SessionDto adjustAux(@RequestBody AdjustReq r) {
     return SessionDto.from(sessionService.adjustAux(r.delta));
+  }
+
+  @PostMapping("/setHp")
+  public SessionDto setHp(@RequestBody Map<String, Integer> body) {
+    int value = body.getOrDefault("value", 0);
+    return SessionDto.from(sessionService.setHp(value));
   }
 
   @Data

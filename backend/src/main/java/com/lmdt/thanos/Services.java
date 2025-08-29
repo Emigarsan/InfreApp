@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +56,8 @@ class SessionService {
 
     var tables = tableRepo.findAll();
     int hpMax = tables.stream()
-        .mapToInt(t -> t.getMode() == Mode.NORMAL ? s.getP1NormalContrib() * t.getPlayerCount()
+        .mapToInt(t -> t.getMode() == Mode.NORMAL
+            ? s.getP1NormalContrib() * t.getPlayerCount()
             : s.getP1ExpertContrib() * t.getPlayerCount())
         .sum();
     int totalPlayers = tables.stream().mapToInt(TableEntity::getPlayerCount).sum();
@@ -65,7 +67,6 @@ class SessionService {
     s.setHpMax(hpMax);
     s.setHpCurrent(hpMax);
     s.setTotalPlayers(totalPlayers);
-    // Fase 1: aux no se usa
     s.setAuxMax(0);
     s.setAuxCurrent(0);
 
@@ -74,7 +75,7 @@ class SessionService {
     return s;
   }
 
-  // 🔽 Ajuste de la vida principal (Fase 1 / Fase 2)
+  // 🔽 Ajuste de la vida principal
   @Transactional
   public SessionEntity adjust(int delta) {
     SessionEntity latest = getOrCreate();
@@ -88,20 +89,16 @@ class SessionService {
     int next = s.getHpCurrent() + delta;
     if (next < 0)
       next = 0;
+    if (next > s.getHpMax())
+      next = s.getHpMax(); // 👈 clamp
     s.setHpCurrent(next);
 
-    if (next == 0) {
-      if (s.getPhase() == Phase.PHASE1) {
-        // 🔥 Transición inmediata a Fase 2 dentro de la misma transacción
-        return advanceToPhase2Internal(s);
-      }
-      if (s.getPhase() == Phase.PHASE2) {
-        s.setLocked(true);
-        s.setPhase(Phase.FINISHED);
-        sessionRepo.saveAndFlush(s);
-        publish(s);
-        return s;
-      }
+    if (s.getPhase() == Phase.PHASE1 && next == 0) {
+      s.setLocked(true);
+    }
+    if (s.getPhase() == Phase.PHASE2 && next == 0) {
+      s.setLocked(true);
+      s.setPhase(Phase.FINISHED);
     }
 
     sessionRepo.saveAndFlush(s);
@@ -123,6 +120,8 @@ class SessionService {
     int next = s.getAuxCurrent() + delta;
     if (next < 0)
       next = 0;
+    if (next > s.getAuxMax())
+      next = s.getAuxMax(); // 👈 clamp
     s.setAuxCurrent(next);
 
     sessionRepo.saveAndFlush(s);
@@ -140,7 +139,8 @@ class SessionService {
   private SessionEntity advanceToPhase2Internal(SessionEntity s) {
     var tables = tableRepo.findAll();
     int hpMax = tables.stream()
-        .mapToInt(t -> t.getMode() == Mode.NORMAL ? s.getP2NormalContrib() * t.getPlayerCount()
+        .mapToInt(t -> t.getMode() == Mode.NORMAL
+            ? s.getP2NormalContrib() * t.getPlayerCount()
             : s.getP2ExpertContrib() * t.getPlayerCount())
         .sum();
     int totalPlayers = tables.stream().mapToInt(TableEntity::getPlayerCount).sum();
@@ -151,8 +151,9 @@ class SessionService {
     s.setHpCurrent(hpMax);
     s.setTotalPlayers(totalPlayers);
 
-    // 🔥 Segundo contador: por ejemplo totalPlayers * indicatorK
-    int auxMax = totalPlayers * Math.max(1, indicatorK);
+    int auxMax = tables.stream()
+        .mapToInt(t -> 2 + (t.getPlayerCount() * indicatorK))
+        .sum();
     s.setAuxMax(auxMax);
     s.setAuxCurrent(auxMax);
 
@@ -167,7 +168,10 @@ class SessionService {
     var tables = tableRepo.findAll();
 
     int hpMax = tables.stream()
-        .mapToInt(t -> t.getMode() == Mode.NORMAL ? s.getP1NormalContrib() : s.getP1ExpertContrib()).sum();
+        .mapToInt(t -> t.getMode() == Mode.NORMAL
+            ? s.getP1NormalContrib() * t.getPlayerCount()
+            : s.getP1ExpertContrib() * t.getPlayerCount())
+        .sum(); // 👈 corregido: multiplicar por players
     int totalPlayers = tables.stream().mapToInt(TableEntity::getPlayerCount).sum();
 
     s.setPhase(Phase.PHASE1);
@@ -178,6 +182,16 @@ class SessionService {
     s.setAuxMax(0);
     s.setAuxCurrent(0);
 
+    sessionRepo.saveAndFlush(s);
+    publish(s);
+    return s;
+  }
+
+  @Transactional
+  public SessionEntity setHp(int value) {
+    SessionEntity latest = getOrCreate();
+    SessionEntity s = sessionRepo.lockById(latest.getId()).orElse(latest);
+    s.setHpCurrent(Math.max(0, Math.min(value, s.getHpMax()))); // 👈 clamp
     sessionRepo.saveAndFlush(s);
     publish(s);
     return s;

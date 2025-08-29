@@ -13,10 +13,10 @@ spring:
 
 app:
   p1:
-    normal: 12
-    expert: 18
+    normal: 16
+    expert: 23
   p2:
-    normal: 14
-    expert: 22
+    normal: 23
+    expert: 26
   indicator:
     k: 1  # multiplicador simple para la barra de fase 2
