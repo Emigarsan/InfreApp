@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { get, post } from '../api'
 import { connect, disconnect } from '../ws'
+import BackgroundLayout from '../components/BackgroundLayout'
 
 type Session = {
     phase: 'PHASE1' | 'PHASE2' | 'FINISHED',
@@ -50,50 +51,52 @@ export default function Admin() {
     }
 
     return (
-        <div style={{ display: 'grid', gap: 16, maxWidth: 600 }}>
-            <h2>Panel de administración</h2>
+        <BackgroundLayout>
+            <div style={{ display: 'grid', gap: 16, maxWidth: 600 }}>
+                <h2>Panel de administración</h2>
 
-            {loading && <div>Cargando estado…</div>}
+                {loading && <div>Cargando estado…</div>}
 
-            {!loading && !session && (
-                <div>
-                    No hay ninguna sesión activa todavía.
-                    <br />
-                    Pulsa <b>Start</b> para iniciar una.
-                    <div style={{ marginTop: 12 }}>
-                        <button onClick={start}>Start</button>
+                {!loading && !session && (
+                    <div>
+                        No hay ninguna sesión activa todavía.
+                        <br />
+                        Pulsa <b>Start</b> para iniciar una.
+                        <div style={{ marginTop: 12 }}>
+                            <button onClick={start}>Start</button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {session && (
-                <>
-                    <div>Fase actual: {session.phase}</div>
-                    <div>HP: {session.hp_current} / {session.hp_max}</div>
-                    <div>Jugadores totales: {session.total_players}</div>
+                {session && (
+                    <>
+                        <div>Fase actual: {session.phase}</div>
+                        <div>HP: {session.hp_current} / {session.hp_max}</div>
+                        <div>Jugadores totales: {session.total_players}</div>
 
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                        <button onClick={start}>Start</button>
-                        <button onClick={advance}>Avanzar fase</button>
-                        <button onClick={recalc}>Recalcular</button>
-                    </div>
+                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            <button onClick={start}>Start</button>
+                            <button onClick={advance}>Avanzar fase</button>
+                            <button onClick={recalc}>Recalcular</button>
+                        </div>
 
-                    <div style={{ marginTop: 20 }}>
-                        <label>
-                            Valor de vida manual:
-                            <input
-                                type="number"
-                                value={manualHp}
-                                onChange={e => setManualHp(e.target.value)}
-                                style={{ marginLeft: 8 }}
-                            />
-                        </label>
-                        <button onClick={applyManualHp} style={{ marginLeft: 8 }}>
-                            Aplicar
-                        </button>
-                    </div>
-                </>
-            )}
-        </div>
+                        <div style={{ marginTop: 20 }}>
+                            <label>
+                                Valor de vida manual:
+                                <input
+                                    type="number"
+                                    value={manualHp}
+                                    onChange={e => setManualHp(e.target.value)}
+                                    style={{ marginLeft: 8 }}
+                                />
+                            </label>
+                            <button onClick={applyManualHp} style={{ marginLeft: 8 }}>
+                                Aplicar
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
+        </BackgroundLayout>
     )
 }
