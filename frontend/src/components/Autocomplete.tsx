@@ -25,7 +25,6 @@ export default function Autocomplete({
     const wrapRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
 
-    // Filtrado simple (case-insensitive, incluye coincidencias parciales)
     const items = useMemo(() => {
         const q = query.trim().toLowerCase()
         if (!q) return options.slice(0, maxItems)
@@ -80,9 +79,14 @@ export default function Autocomplete({
                 onChange={e => { setQuery(e.target.value); setOpen(true); setActiveIdx(0) }}
                 onKeyDown={onKeyDown}
                 style={{
-                    width: '100%', padding: '10px 12px', borderRadius: 12,
-                    border: '1px solid #ccc', outline: 'none',
-                    boxShadow: '0 1px 3px rgba(0,0,0,.06)'
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: 12,
+                    border: '1px solid #ccc',
+                    outline: 'none',
+                    boxShadow: '0 1px 3px rgba(0,0,0,.06)',
+                    backgroundColor: '#fff',
+                    color: '#000' // 👈 texto negro siempre legible
                 }}
                 aria-autocomplete="list"
                 aria-expanded={open}
@@ -91,9 +95,21 @@ export default function Autocomplete({
                 <ul
                     role="listbox"
                     style={{
-                        position: 'absolute', zIndex: 20, left: 0, right: 0, top: '100%', marginTop: 6,
-                        background: '#fff', border: '1px solid #ddd', borderRadius: 12,
-                        boxShadow: '0 6px 20px rgba(0,0,0,.08)', maxHeight: 250, overflow: 'auto', padding: 6, listStyle: 'none'
+                        position: 'absolute',
+                        zIndex: 20,
+                        left: 0,
+                        right: 0,
+                        top: '100%',
+                        marginTop: 6,
+                        background: '#fff',
+                        color: '#000', // 👈 texto negro en desplegable
+                        border: '1px solid #ddd',
+                        borderRadius: 12,
+                        boxShadow: '0 6px 20px rgba(0,0,0,.08)',
+                        maxHeight: 250,
+                        overflow: 'auto',
+                        padding: 6,
+                        listStyle: 'none'
                     }}
                 >
                     {items.map((opt, idx) => (
@@ -101,7 +117,7 @@ export default function Autocomplete({
                             key={opt}
                             role="option"
                             aria-selected={idx === activeIdx}
-                            onMouseDown={(e) => { e.preventDefault(); commit(opt) }} // prevent blur
+                            onMouseDown={(e) => { e.preventDefault(); commit(opt) }}
                             onMouseEnter={() => setActiveIdx(idx)}
                             style={{
                                 padding: '8px 10px',
