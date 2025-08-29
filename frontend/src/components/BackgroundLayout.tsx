@@ -6,11 +6,12 @@ export default function BackgroundLayout({ children }: { children: ReactNode }) 
             {/* Fondo con transparencia */}
             <div
                 style={{
-                    backgroundImage: 'url(/background.png)', // 👈 pon aquí tu imagen en /public/background.png
+                    backgroundColor: 'black',            // 👈 fondo negro por defecto
+                    backgroundImage: 'url(/background.png)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    opacity: 0.4,
-                    position: 'absolute',
+                    opacity: 0.66,                       // 👈 transparencia de la imagen
+                    position: 'fixed',                   // 👈 se fija al viewport
                     top: 0,
                     left: 0,
                     width: '100%',
@@ -19,7 +20,15 @@ export default function BackgroundLayout({ children }: { children: ReactNode }) 
                 }}
             />
             {/* Contenido */}
-            <div style={{ position: 'relative', zIndex: 1 }}>
+            <div
+                style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    minHeight: '100vh',                  // 👈 garantiza que el contenido alinee con el fondo
+                    display: 'grid',
+                    placeItems: 'center'
+                }}
+            >
                 {children}
             </div>
         </div>
