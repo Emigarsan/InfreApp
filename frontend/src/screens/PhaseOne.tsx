@@ -48,7 +48,7 @@ export default function PhaseOne() {
   const disabled = session.locked
   return (
     <div style={{ display: 'grid', placeItems: 'center', gap: 16 }}>
-      <img src="/thanos_phase1.png" alt="Thanos Fase 1" style={{ maxWidth: 320 }} />
+      <img src="/thanos_phase1.png" alt="Thanos Fase 1" style={{ maxWidth: 500 }} />
       <div style={{ fontSize: 28 }}>{session.hp_current} / {session.hp_max}</div>
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

@@ -43,7 +43,7 @@ export default function PhaseTwo() {
     <div style={{ display: 'grid', gap: 24, placeItems: 'center' }}>
       {/* Contador principal: Thanos F2 */}
       <div style={{ display: 'grid', gap: 12, placeItems: 'center' }}>
-        <img src="/thanos_phase2.png" alt="Thanos Fase 2" style={{ maxWidth: 320 }} />
+        <img src="/thanos_phase2.png" alt="Thanos Fase 2" style={{ maxWidth: 500 }} />
         <div style={{ fontSize: 28 }}>{session.hp_current} / {session.hp_max}</div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {[-10, -5, -1, +1, +5, +10].map(d =>
@@ -83,9 +83,9 @@ export default function PhaseTwo() {
           </>
         ) : (
           <>
-            <img src="/indicator_phase2_2.png" alt="Indicador finalizado" style={{ maxWidth: 640, width: '100%' }} />
+            <img src="/indicator_phase2_2.png" alt="Indicador finalizado" style={{ maxWidth: 400, width: '100%' }} />
             <div style={{ fontSize: 20, marginTop: 12, fontWeight: 'bold', color: 'red', textAlign: 'center' }}>
-              Presten atención a los organizadores
+              Cada mesa tiene su Cisne negro individual, no tiene vida masiva. En caso de duda, pregunta a los organizadores
             </div>
           </>
         )}
