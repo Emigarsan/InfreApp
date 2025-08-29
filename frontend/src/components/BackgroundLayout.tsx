@@ -10,7 +10,7 @@ export default function BackgroundLayout({ children }: { children: ReactNode }) 
                     backgroundImage: 'url(/background.png)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    opacity: 0.66,                       // 👈 transparencia de la imagen
+                    opacity: 0.5,                       // 👈 transparencia de la imagen
                     position: 'fixed',                   // 👈 se fija al viewport
                     top: 0,
                     left: 0,
