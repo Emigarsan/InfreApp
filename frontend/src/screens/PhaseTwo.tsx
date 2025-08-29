@@ -59,25 +59,36 @@ export default function PhaseTwo() {
         </div>
       </div>
 
-      {/* Contador auxiliar: indicador horizontal */}
+      {/* Contador auxiliar */}
       <div style={{ display: 'grid', gap: 12, placeItems: 'center', width: '100%' }}>
-        <img src="/indicator_phase2.png" alt="Indicador Fase 2" style={{ maxWidth: 640, width: '100%' }} />
-        <div style={{ fontSize: 22 }}>{session.aux_current} / {session.aux_max}</div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {[-10, -5, -1, +1, +5, +10].map(d =>
-            <button
-              key={'a' + d}
-              disabled={disabled}
-              onClick={() => adjustAux(d)}
-              style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}
-            >
-              {d > 0 ? `+${d}` : d}
-            </button>
-          )}
-        </div>
-        <div style={{ opacity: .7, fontSize: 12 }}>
-          Participantes totales: {session.total_players}
-        </div>
+        {session.aux_current > 0 ? (
+          <>
+            <img src="/indicator_phase2.png" alt="Indicador Fase 2" style={{ maxWidth: 640, width: '100%' }} />
+            <div style={{ fontSize: 22 }}>{session.aux_current} / {session.aux_max}</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {[-10, -5, -1, +1, +5, +10].map(d =>
+                <button
+                  key={'a' + d}
+                  disabled={disabled}
+                  onClick={() => adjustAux(d)}
+                  style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}
+                >
+                  {d > 0 ? `+${d}` : d}
+                </button>
+              )}
+            </div>
+            <div style={{ opacity: .7, fontSize: 12 }}>
+              Participantes totales: {session.total_players}
+            </div>
+          </>
+        ) : (
+          <>
+            <img src="/indicator_phase2_2.png" alt="Indicador finalizado" style={{ maxWidth: 640, width: '100%' }} />
+            <div style={{ fontSize: 20, marginTop: 12, fontWeight: 'bold', color: 'red', textAlign: 'center' }}>
+              Presten atención a los organizadores
+            </div>
+          </>
+        )}
       </div>
 
       {session.phase === 'FINISHED' && (
