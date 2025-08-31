@@ -9,10 +9,13 @@ body {
 }
 
 button {
-    font-family: inherit;
-    color: inherit;
-    /* que herede el blanco del body */
+    color: black;
+    /* 👈 siempre negro en botones */
+    background: #f1f1f1;
+    /* opcional, un gris claro */
+    font-weight: bold;
 }
+
 
 input,
 select,

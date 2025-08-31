@@ -90,7 +90,7 @@ export default function Admin() {
                                     style={{ marginLeft: 8 }}
                                 />
                             </label>
-                            <button onClick={applyManualHp} style={{ marginLeft: 8 }}>
+                            <button onClick={applyManualHp} style={{ marginLeft: 8, }}>
                                 Aplicar
                             </button>
                         </div>
