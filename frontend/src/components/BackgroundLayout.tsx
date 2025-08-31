@@ -6,11 +6,10 @@ export default function BackgroundLayout({ children }: { children: ReactNode }) 
             {/* Fondo con transparencia */}
             <div
                 style={{
-                    backgroundColor: 'black',            // 👈 fondo negro por defecto
+                    backgroundColor: 'rgba(0, 0, 0, 0.66)',            // 👈 fondo negro por defecto
                     backgroundImage: 'url(/background.png)',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    opacity: 0.75,                       // 👈 transparencia de la imagen
+                    backgroundPosition: 'center'                       // 👈 transparencia de la imagen
                     position: 'fixed',                   // 👈 se fija al viewport
                     top: 0,
                     left: 0,
