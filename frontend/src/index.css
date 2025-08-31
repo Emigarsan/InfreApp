@@ -1,0 +1,21 @@
+/* src/index.css */
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: black;
+    /* fondo por defecto */
+    color: white;
+    /* texto por defecto */
+}
+
+button {
+    font-family: inherit;
+    color: inherit;
+    /* que herede el blanco del body */
+}
+
+input,
+select,
+textarea {
+    font-family: inherit;
+}

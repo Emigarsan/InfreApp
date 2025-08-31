@@ -64,7 +64,7 @@ export default function PhaseOne() {
         </div>
 
         {disabled && <div style={{ fontSize: 14, opacity: .7 }}>
-          Esperando a que el admin pulse <b>Start/Recalc</b>…
+          Parece que Thanos está tramando algo...
         </div>}
       </div>
     </BackgroundLayout>

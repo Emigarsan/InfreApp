@@ -6,6 +6,7 @@ import Questionnaire from './screens/Questionnaire'
 import PhaseOne from './screens/PhaseOne'
 import PhaseTwo from './screens/PhaseTwo'
 import Admin from './screens/Admin'
+import './index.css'
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <App />
+  </React.StrictMode>,
 )
