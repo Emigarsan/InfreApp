@@ -9,7 +9,7 @@ export default function BackgroundLayout({ children }: { children: ReactNode }) 
                     backgroundColor: 'rgba(0, 0, 0, 0.66)',            // 👈 fondo negro por defecto
                     backgroundImage: 'url(/background.png)',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center'                       // 👈 transparencia de la imagen
+                    backgroundPosition: 'center',                       // 👈 transparencia de la imagen
                     position: 'fixed',                   // 👈 se fija al viewport
                     top: 0,
                     left: 0,
