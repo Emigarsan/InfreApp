@@ -53,7 +53,7 @@ export default function PhaseTwo() {
                 key={'m' + d}
                 disabled={disabled}
                 onClick={() => adjustMain(d)}
-                style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}
+                style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)', color: "blueviolet" }}
               >
                 {d > 0 ? `+${d}` : d}
               </button>
@@ -73,7 +73,7 @@ export default function PhaseTwo() {
                     key={'a' + d}
                     disabled={disabled}
                     onClick={() => adjustAux(d)}
-                    style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}
+                    style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)', color: "blueviolet" }}
                   >
                     {d > 0 ? `+${d}` : d}
                   </button>

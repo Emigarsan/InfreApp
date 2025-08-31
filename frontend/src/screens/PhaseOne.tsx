@@ -57,13 +57,13 @@ export default function PhaseOne() {
           {[-10, -5, -1, +1, +5, +10].map(d =>
             <button key={d} disabled={disabled}
               onClick={() => adjust(d)}
-              style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)' }}>
+              style={{ padding: '8px 14px', borderRadius: 12, boxShadow: '0 2px 6px rgba(0,0,0,.2)', color: "blueviolet" }}>
               {d > 0 ? `+${d}` : d}
             </button>
           )}
         </div>
 
-        {disabled && <div style={{ fontSize: 14, opacity: .7 }}>
+        {disabled && <div style={{ fontSize: 14, opacity: .7, color: 'white' }}>
           Parece que Thanos está tramando algo...
         </div>}
       </div>
