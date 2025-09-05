@@ -50,6 +50,26 @@ export default function Admin() {
         setManualHp('')
     }
 
+    // 🔽 Descargar jugadores como CSV
+    const downloadPlayersCsv = async () => {
+        try {
+            const res = await fetch('/api/players/export/csv')
+            const text = await res.text()
+
+            const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', 'jugadores.csv')
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        } catch (err) {
+            console.error('Error al descargar CSV', err)
+            alert('No se pudo descargar el CSV')
+        }
+    }
+
     return (
         <BackgroundLayout>
             <div style={{ display: 'grid', gap: 16, maxWidth: 600 }}>
@@ -78,6 +98,7 @@ export default function Admin() {
                             <button onClick={start}>Start</button>
                             <button onClick={advance}>Avanzar fase</button>
                             <button onClick={recalc}>Recalcular</button>
+                            <button onClick={downloadPlayersCsv}>Descargar jugadores (CSV)</button>
                         </div>
 
                         <div style={{ marginTop: 20 }}>
@@ -90,7 +111,7 @@ export default function Admin() {
                                     style={{ marginLeft: 8 }}
                                 />
                             </label>
-                            <button onClick={applyManualHp} style={{ marginLeft: 8, }}>
+                            <button onClick={applyManualHp} style={{ marginLeft: 8 }}>
                                 Aplicar
                             </button>
                         </div>
